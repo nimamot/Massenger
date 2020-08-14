@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class RegisterViewController: UIViewController {
     private let scrollView: UIScrollView = {
@@ -164,13 +165,30 @@ class RegisterViewController: UIViewController {
         firstNameField.resignFirstResponder()
         lastNameField.resignFirstResponder()
         
-        guard let firstName = firstNameField.text, let lastName = lastNameField.text, let email = emailField.text, let password = passwordlField.text,!firstName.isEmpty, !lastName.isEmpty, !email.isEmpty, !password.isEmpty, password.count >= 6 else {
+        guard let firstName = firstNameField.text,
+            let lastName = lastNameField.text,
+            let email = emailField.text,
+            let password = passwordlField.text,
+            !firstName.isEmpty,
+            !lastName.isEmpty,
+            !email.isEmpty,
+            !password.isEmpty, password.count >= 6 else {
             alartUserLoginError()
             return
         }
         
         //firebase Log In
+        
+        FirebaseAuth.Auth.auth().createUser(withEmail: email, password: password, completion: { authResult, error in
+            guard let result = authResult,  error == nil else {
+                print("error creating user")
+                return
+            }
+            let user = result.user
+            print("Created User: \(user)")
+        })
     }
+    
     
     func alartUserLoginError() {
         let alert = UIAlertController(title: "Woops", message: "please enter all information to creat a new account", preferredStyle: .alert)
