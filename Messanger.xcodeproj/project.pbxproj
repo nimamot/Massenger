@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3C4C53D824E87D3C00DB26C0 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4C53D724E87D3C00DB26C0 /* ChatViewController.swift */; };
 		3C8B114324E745DE00327157 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C8B114224E745DE00327157 /* DatabaseManager.swift */; };
 		3CA25E8B24E4A41C00235200 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CA25E8A24E4A41C00235200 /* AppDelegate.swift */; };
 		3CA25E8D24E4A41C00235200 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CA25E8C24E4A41C00235200 /* SceneDelegate.swift */; };
@@ -45,6 +46,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3C4C53D724E87D3C00DB26C0 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		3C8B114224E745DE00327157 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		3CA25E8724E4A41C00235200 /* Messanger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Messanger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CA25E8A24E4A41C00235200 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -169,6 +171,7 @@
 				3CA25EC524E4A86100235200 /* VideoPlayerViewController.swift */,
 				3CA25EC724E4A88A00235200 /* NewConversationViewController.swift */,
 				3CA25EC924E4A89F00235200 /* ProfileViewController.swift */,
+				3C4C53D724E87D3C00DB26C0 /* ChatViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -413,6 +416,7 @@
 				3CA25EC424E4A84D00235200 /* PhotoViewrViewController.swift in Sources */,
 				3CA25ECA24E4A89F00235200 /* ProfileViewController.swift in Sources */,
 				3CA25E8B24E4A41C00235200 /* AppDelegate.swift in Sources */,
+				3C4C53D824E87D3C00DB26C0 /* ChatViewController.swift in Sources */,
 				3CA25E8D24E4A41C00235200 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
