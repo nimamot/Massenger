@@ -9,6 +9,7 @@
 import UIKit
 import MessageKit
 import InputBarAccessoryView
+import SDWebImage
 
 struct Message: MessageType {
     public var sender: SenderType
@@ -50,6 +51,15 @@ struct Sender: SenderType {
     
 }
 
+struct Media: MediaItem {
+    var url: URL?
+    var image: UIImage?
+    var placeholderImage: UIImage
+    var size: CGSize
+    
+    
+}
+
 class ChatViewController: MessagesViewController {
     
     public static let dateFormater: DateFormatter = {
@@ -70,10 +80,11 @@ class ChatViewController: MessagesViewController {
         guard let email = UserDefaults.standard.value(forKey: "email") as? String else {
             return nil
         }
+        let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
         
         return Sender(photoURL: "",
-                      senderId: email,
-                      displayName: "Joe Smith")
+                      senderId: safeEmail,
+                      displayName: "Me")
     }
     
     
@@ -81,9 +92,7 @@ class ChatViewController: MessagesViewController {
         self.conversationId = id
         self.otherUserEmail = email
         super.init(nibName: nil, bundle: nil)
-        if let conversationId = conversationId {
-            listenForMessage(id: conversationId)
-        }
+        
     }
     
     required init?(coder: NSCoder) {
@@ -97,20 +106,86 @@ class ChatViewController: MessagesViewController {
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesLayoutDelegate = self
         messagesCollectionView.messagesDisplayDelegate = self
+        messagesCollectionView.messageCellDelegate = self
         messageInputBar.delegate = self
+        setupInputButton()
     }
     
-    private func listenForMessage(id: String) {
+    private func setupInputButton() {
+        let button = InputBarButtonItem()
+        button.setSize(CGSize(width: 35, height: 35), animated: false)
+        button.setImage(UIImage(systemName: "paperclip"), for: .normal)
+        button.onTouchUpInside{ [weak self] _ in
+            self?.presentInputActionSheet()
+        }
+        messageInputBar.setLeftStackViewWidthConstant(to: 36, animated: false)
+        messageInputBar.setStackViewItems([button], forStack: .left, animated: false)
+        
+    }
+    
+    private func presentInputActionSheet() {
+        let actionSheet = UIAlertController(title: "Attach media",
+                                            message: "what do you want to attach?",
+                                            preferredStyle: .actionSheet)
+        
+        actionSheet.addAction(UIAlertAction(title: "photo", style: .default, handler: {  _ in
+            self.presentPhotoInputActionsheet()
+        }))
+        actionSheet.addAction(UIAlertAction(title: "Video", style: .default, handler: {  _ in
+            
+        }))
+        actionSheet.addAction(UIAlertAction(title: "Audio", style: .default, handler: { _ in
+            
+        }))
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        present(actionSheet, animated: true)
+        
+    }
+    
+    private func presentPhotoInputActionsheet() {
+        let actionSheet = UIAlertController(title: "Attach photo",
+                                            message: "where would u like to attach a photo from?",
+                                            preferredStyle: .actionSheet)
+        
+        actionSheet.addAction(UIAlertAction(title: "camera", style: .default, handler: {  [weak self] _ in
+            let picker = UIImagePickerController()
+            picker.sourceType = .camera
+            picker.delegate = self
+            picker.allowsEditing = true
+            self?.present(picker, animated: true)
+         }))
+        actionSheet.addAction(UIAlertAction(title: "photo Library", style: .default, handler: { [weak self] _ in
+            let picker = UIImagePickerController()
+            picker.sourceType = .photoLibrary
+            picker.delegate = self
+            picker.allowsEditing = true
+            self?.present(picker, animated: true)
+        }))
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+       
+        
+        present(actionSheet, animated: true)
+        
+    }
+    
+    private func listenForMessage(id: String, shouldScrollToBottom: Bool) {
         DatabaseManager.shared.getAllMessagesForConversation(with: id, completion: { [weak self]result in
             switch result {
             case .success(let messages):
+                print("success in getting messages: \(messages)")
                 guard !messages.isEmpty else{
+                    print("messages are empty")
                     return
                 }
                 self?.messages = messages
                 
                 DispatchQueue.main.async {
-                    self?.messagesCollectionView.reloadDataAndKeepOffset()
+                    self?.messagesCollectionView.reloadData()
+                    
+                    if shouldScrollToBottom {
+                        self?.messagesCollectionView.scrollToBottom()
+                    }
                 }
             case .failure(let error):
                 print("failed to get messages: \(error)")
@@ -123,6 +198,71 @@ class ChatViewController: MessagesViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         messageInputBar.inputTextView.becomeFirstResponder()
+        if let conversationId = conversationId {
+            listenForMessage(id: conversationId, shouldScrollToBottom: true)
+        }
+    }
+}
+
+extension ChatViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true, completion: nil)
+        guard let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage,
+            let imageData = image.pngData(),
+            let messageId = creatMessageId(),
+            let conversationId = conversationId,
+            let name = self.title,
+            let selfSender = selfSender else {
+                return
+        }
+        
+        
+        let fileName = "photo_message_" + messageId.replacingOccurrences(of: " ", with: "-") + ".png"
+        //upload image
+        
+        StorageManeger.shared.uploadMessagePhoto(with: imageData, fileName: fileName, completion: { [weak self] result in
+            guard let strongSelf = self else {
+                return
+            }
+            switch result {
+            case .success(let urlString):
+                // Ready to send
+                print("uploaded Message photo: \(urlString)")
+                
+                guard let url = URL(string: urlString),
+                    let placeholder = UIImage(systemName: "plus") else{
+                        return
+                }
+                
+                let media = Media(url: url,
+                                  image: nil,
+                                  placeholderImage: placeholder,
+                                  size: .zero)
+                
+                let message = Message(sender: selfSender,
+                                       messageId: messageId,
+                                       sentDate: Date(),
+                                       kind: .photo(media))
+                
+                
+                DatabaseManager.shared.sendMessage(to: conversationId, name: name, otherUserEmail:  strongSelf.otherUserEmail, newMessage: message, completion: {success in
+                    
+                    if success {
+                        print("sent photo message")
+                    }
+                    else {
+                        print("failed to send photo message")
+                    }
+                })
+            case .failure(let error):
+                print("message photo upload error: \(error)")
+            }
+        })
+        //send Message
     }
 }
 
@@ -136,17 +276,20 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
         }
         
         print("sending: \(text)")
+        
+        let mmessage = Message(sender: selfSender,
+                               messageId: messageId,
+                               sentDate: Date(),
+                               kind: .text(text))
+        
+    
         //sendMessage
         if isNewConvesation {
-            
             // creatAConvoInDatabase
-            let mmessage = Message(sender: selfSender,
-                                   messageId: messageId,
-                                   sentDate: Date(),
-                                   kind: .text(text))
-            DatabaseManager.shared.CreatNewConversation(with: otherUserEmail, name: self.title ?? "user" , firstMessage: mmessage, completion: { success in
+            DatabaseManager.shared.CreatNewConversation(with: otherUserEmail, name: self.title ?? "user" , firstMessage: mmessage, completion: { [weak self] success in
                 if success {
                     print("message sent")
+                    self?.isNewConvesation = false
                 }
                 else {
                     print("failed to send")
@@ -154,7 +297,18 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
             })
         }
         else {
+            guard let conversationId = conversationId, let name = self.title else {
+                return
+            }
             //append to the convo
+            DatabaseManager.shared.sendMessage(to: conversationId,name: name,otherUserEmail: otherUserEmail, newMessage: mmessage, completion: { success in
+                if success {
+                    print("message sent")
+                }
+                else {
+                    print("failed to send")
+                }
+            })
         }
     }
     
@@ -178,7 +332,7 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
 
 extension ChatViewController: MessagesDataSource, MessagesLayoutDelegate, MessagesDisplayDelegate {
     func currentSender() -> SenderType {
-        if let sender = self.selfSender {
+        if let sender = selfSender {
             return sender
         }
         fatalError("self Sender is nil, email should be cashed")
@@ -193,4 +347,41 @@ extension ChatViewController: MessagesDataSource, MessagesLayoutDelegate, Messag
     }
     
     
+    func configureMediaMessageImageView(_ imageView: UIImageView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
+        
+        guard let message = message as? Message else{
+            return
+        }
+        
+        switch message.kind {
+        case .photo(let media):
+            guard let imageUrl = media.url else {
+                return
+            }
+            imageView.sd_setImage(with: imageUrl, completed: nil)
+        default:
+            break
+        }
+    }
 }
+
+extension ChatViewController: MessageCellDelegate {
+    func didTapImage(in cell: MessageCollectionViewCell) {
+        guard let indexPath = messagesCollectionView.indexPath(for: cell) else {
+            return
+        }
+        let message = messages[indexPath.section]
+        
+        switch message.kind {
+        case .photo(let media):
+            guard let imageUrl = media.url else {
+                return
+            }
+            let vc = PhotoViewrViewController(with: imageUrl)
+            self.navigationController?.pushViewController(vc, animated: true)
+        default:
+            break
+        }
+    }
+}
+
