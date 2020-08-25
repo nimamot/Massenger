@@ -96,11 +96,10 @@ class ConversationsViewController: UIViewController {
         present(navVC, animated: true)
     }
     
-    private func creatNewConversation(result: [String: String]) {
-        guard let name = result["name"],
-            let email = result["email"] else {
-                return
-        }
+    private func creatNewConversation(result: SearchResult) {
+        let name = result.name
+        let email = result.email
+        
         let vc = ChatViewController(with: email, id: nil)
         vc.isNewConvesation = true
         vc.title = name

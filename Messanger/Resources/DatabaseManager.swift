@@ -371,15 +371,28 @@ extension DatabaseManager {
                 var kind: MessageKind?
                 if type == "photo" {
                     //photo
+                    guard let videoUrl = URL(string: content),
+                        let placeHolder = UIImage(systemName: "plus") else {
+                            return nil
+                    }
+                    let media = Media(url: videoUrl,
+                                      image: nil,
+                                      placeholderImage: placeHolder,
+                                      size: CGSize(width: 300, height: 300))
+                    kind = .photo(media)
+                }
+                    
+                else if type == "video" {
+                    //photo
                     guard let imageurl = URL(string: content),
-                    let placeHolder = UIImage(systemName: "plus") else {
-                        return nil
+                        let placeHolder = UIImage(named: "videoPlaceHolder") else {
+                            return nil
                     }
                     let media = Media(url: imageurl,
                                       image: nil,
                                       placeholderImage: placeHolder,
                                       size: CGSize(width: 300, height: 300))
-                    kind = .photo(media)
+                    kind = .video(media)
                 }
                 else {
                     kind = .text(content)
@@ -438,11 +451,14 @@ extension DatabaseManager {
                 break
             case .photo(let mediaItem):
                 if let targetUrlString = mediaItem.url?.absoluteString {
-                     message = targetUrlString
+                    message = targetUrlString
                 }
                 break
-            case .video(_):
-                break
+            case .video(let mediaItem):
+                if let targetUrlString = mediaItem.url?.absoluteString {
+                    message = targetUrlString
+                }
+                
             case .location(_):
                 break
             case .emoji(_):

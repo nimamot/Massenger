@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1BB33E5B46C1DBBB8420788B /* Pods_Messanger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BA24DC9AA744B239EFED2B3 /* Pods_Messanger.framework */; };
+		3C066D6B24F4EF7F000B4F89 /* NewConversationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C066D6A24F4EF7F000B4F89 /* NewConversationCell.swift */; };
 		3C4C53D824E87D3C00DB26C0 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4C53D724E87D3C00DB26C0 /* ChatViewController.swift */; };
 		3C84A08224F1A63E004244D9 /* ConversationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C84A08124F1A63E004244D9 /* ConversationTableViewCell.swift */; };
 		3C8B114324E745DE00327157 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C8B114224E745DE00327157 /* DatabaseManager.swift */; };
@@ -49,6 +50,7 @@
 
 /* Begin PBXFileReference section */
 		1BA24DC9AA744B239EFED2B3 /* Pods_Messanger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Messanger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3C066D6A24F4EF7F000B4F89 /* NewConversationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewConversationCell.swift; sourceTree = "<group>"; };
 		3C4C53D724E87D3C00DB26C0 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		3C84A08124F1A63E004244D9 /* ConversationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationTableViewCell.swift; sourceTree = "<group>"; };
 		3C8B114224E745DE00327157 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
@@ -178,6 +180,7 @@
 				3CA25EBE24E4A5E700235200 /* Storyboards */,
 				3CA25E9324E4A41E00235200 /* Assets.xcassets */,
 				3C84A08124F1A63E004244D9 /* ConversationTableViewCell.swift */,
+				3C066D6A24F4EF7F000B4F89 /* NewConversationCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -413,6 +416,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3CA25EC024E4A81600235200 /* LoginViewController.swift in Sources */,
+				3C066D6B24F4EF7F000B4F89 /* NewConversationCell.swift in Sources */,
 				3C8B114324E745DE00327157 /* DatabaseManager.swift in Sources */,
 				3CA25EC224E4A82900235200 /* RegisterViewController.swift in Sources */,
 				3CA25ECF24E4B57300235200 /* Extentions.swift in Sources */,
