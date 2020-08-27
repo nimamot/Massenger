@@ -20,8 +20,8 @@ struct profileViewModel {
     let title: String
     let handler: (() -> Void)?
 }
-class ProfileViewController: UIViewController {
-
+final class ProfileViewController: UIViewController {
+    
     @IBOutlet var tableView: UITableView!
     
     var data = [profileViewModel]()
@@ -41,25 +41,34 @@ class ProfileViewController: UIViewController {
                 return
             }
             
-            let actionSheet = UIAlertController(title: "", message: "", preferredStyle: .actionSheet)
-            actionSheet.addAction(UIAlertAction(title: "Log Out", style: .destructive, handler: { [weak self] _ in
-                guard let strongSelf = self else{
-                    return
-                }
-                do {
-                    try FirebaseAuth.Auth.auth().signOut()
-                    
-                    let vc = LoginViewController()
-                    let nav = UINavigationController(rootViewController: vc)
-                    nav.modalPresentationStyle = .fullScreen
-                    strongSelf.present(nav, animated: true)
-                    
-                }
-                catch {
-                    print("failed to log out")
-                }
-                
-                
+            let actionSheet = UIAlertController(title: "",
+                                                message: "",
+                                                preferredStyle: .actionSheet)
+            actionSheet.addAction(UIAlertAction(title: "Log Out",
+                                                style: .destructive,
+                                                
+                                                handler: { [weak self] _ in
+                                                    guard let strongSelf = self else{
+                                                        return
+                                                    }
+                                                    
+                                                    UserDefaults.standard.setValue(nil, forKey: "email")
+                                                    UserDefaults.standard.setValue(nil, forKey: "name")
+                                                    
+                                                    do {
+                                                        try FirebaseAuth.Auth.auth().signOut()
+                                                        
+                                                        let vc = LoginViewController()
+                                                        let nav = UINavigationController(rootViewController: vc)
+                                                        nav.modalPresentationStyle = .fullScreen
+                                                        strongSelf.present(nav, animated: true)
+                                                        
+                                                    }
+                                                    catch {
+                                                        print("failed to log out")
+                                                    }
+                                                    
+                                                    
             }))
             
             actionSheet.addAction(UIAlertAction(title: "Canlel",
@@ -144,11 +153,11 @@ class profileTableViewCell: UITableViewCell {
         
         switch viewModel.ViewModelType {
         case .info:
-            self.textLabel?.textAlignment = .left
-            self.selectionStyle = .none
+            textLabel?.textAlignment = .left
+            selectionStyle = .none
         case .logout:
-            self.textLabel?.textColor = .red
-            self.textLabel?.textAlignment = .center
+            textLabel?.textColor = .red
+            textLabel?.textAlignment = .center
         }
     }
 }

@@ -23,7 +23,7 @@ struct LatestMessage {
     let text: String
     let isRead: Bool
 }
-class ConversationsViewController: UIViewController {
+final class ConversationsViewController: UIViewController {
     
     private let spinner = JGProgressHUD(style: .dark)
     
@@ -56,7 +56,6 @@ class ConversationsViewController: UIViewController {
         view.addSubview(tableView)
         view.addSubview(noConversationsLabel)
         setupTableView()
-        fetchConvertions()
         startListeningForConversation()
         
         loginObserver = NotificationCenter.default.addObserver(forName: .didLogInNotification, object: nil, queue: .main, using: { [weak self] _ in
@@ -86,15 +85,20 @@ class ConversationsViewController: UIViewController {
             case .success(let conversations):
                 print("successfully got conversation models")
                 guard !conversations.isEmpty else{
+                    self?.tableView.isHidden = true
+                    self?.noConversationsLabel.isHidden = false
                     return
                 }
-                
+                self?.noConversationsLabel.isHidden = true
+                self?.tableView.isHidden = false
                 self?.conversations = conversations
                 
                 DispatchQueue.main.async {
                     self?.tableView.reloadData()
                 }
             case .failure(let error):
+                self?.tableView.isHidden = true
+                self?.noConversationsLabel.isHidden = false
                 print("failed to get convos: \(error)")
                 
             }
@@ -162,6 +166,10 @@ class ConversationsViewController: UIViewController {
     override func viewDidLayoutSubviews(){
         super.viewDidLayoutSubviews()
         tableView.frame = view.bounds
+        noConversationsLabel.frame = CGRect(x: 10,
+                                            y: (view.height-100)/2,
+                                            width: view.width-20,
+                                            height: 100)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -188,12 +196,7 @@ class ConversationsViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
     }
-    
-    private func fetchConvertions() {
-        tableView.isHidden = false
-        
-    }
-    
+
 }
 
 extension ConversationsViewController: UITableViewDelegate, UITableViewDataSource {
@@ -235,13 +238,13 @@ extension ConversationsViewController: UITableViewDelegate, UITableViewDataSourc
             
             let coversationId = conversations[indexPath.row].id
             tableView.beginUpdates()
+            self.conversations.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .left)
+            
             
             DatabaseManager.shared.deletConversation(conversationId: coversationId, completion: { [weak self]  success in
-                if success {
-                    self?.conversations.remove(at: indexPath.row)
-                    
-                    tableView.deleteRows(at: [indexPath], with: .left)
-    
+                if !success {
+                    print("failed to delet")
                 }
             })
             

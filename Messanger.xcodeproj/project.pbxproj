@@ -26,7 +26,6 @@
 		3CA25EC024E4A81600235200 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CA25EBF24E4A81600235200 /* LoginViewController.swift */; };
 		3CA25EC224E4A82900235200 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CA25EC124E4A82900235200 /* RegisterViewController.swift */; };
 		3CA25EC424E4A84D00235200 /* PhotoViewrViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CA25EC324E4A84D00235200 /* PhotoViewrViewController.swift */; };
-		3CA25EC624E4A86100235200 /* VideoPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CA25EC524E4A86100235200 /* VideoPlayerViewController.swift */; };
 		3CA25EC824E4A88A00235200 /* NewConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CA25EC724E4A88A00235200 /* NewConversationViewController.swift */; };
 		3CA25ECA24E4A89F00235200 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CA25EC924E4A89F00235200 /* ProfileViewController.swift */; };
 		3CA25ECF24E4B57300235200 /* Extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CA25ECE24E4B57300235200 /* Extentions.swift */; };
@@ -75,7 +74,6 @@
 		3CA25EBF24E4A81600235200 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		3CA25EC124E4A82900235200 /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		3CA25EC324E4A84D00235200 /* PhotoViewrViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewrViewController.swift; sourceTree = "<group>"; };
-		3CA25EC524E4A86100235200 /* VideoPlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerViewController.swift; sourceTree = "<group>"; };
 		3CA25EC724E4A88A00235200 /* NewConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewConversationViewController.swift; sourceTree = "<group>"; };
 		3CA25EC924E4A89F00235200 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		3CA25ECE24E4B57300235200 /* Extentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extentions.swift; sourceTree = "<group>"; };
@@ -168,7 +166,6 @@
 				3CA25E8E24E4A41C00235200 /* ConversationsViewController.swift */,
 				3CA25ECD24E4A9C600235200 /* Login */,
 				3CA25EC324E4A84D00235200 /* PhotoViewrViewController.swift */,
-				3CA25EC524E4A86100235200 /* VideoPlayerViewController.swift */,
 				3CA25EC724E4A88A00235200 /* NewConversationViewController.swift */,
 				3CA25EC924E4A89F00235200 /* ProfileViewController.swift */,
 				3C4C53D724E87D3C00DB26C0 /* ChatViewController.swift */,
@@ -254,6 +251,7 @@
 				3CA25E8424E4A41C00235200 /* Frameworks */,
 				3CA25E8524E4A41C00235200 /* Resources */,
 				952BB91261340F59C17A0FF8 /* [CP] Embed Pods Frameworks */,
+				3CA7BCE224F78318000AA033 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -372,6 +370,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		3CA7BCE224F78318000AA033 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
+		};
 		9111E70716779DE37AAA0CC6 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -425,7 +440,6 @@
 				3CA25ECF24E4B57300235200 /* Extentions.swift in Sources */,
 				3CA25EC824E4A88A00235200 /* NewConversationViewController.swift in Sources */,
 				3CA25E8F24E4A41C00235200 /* ConversationsViewController.swift in Sources */,
-				3CA25EC624E4A86100235200 /* VideoPlayerViewController.swift in Sources */,
 				3CA25EC424E4A84D00235200 /* PhotoViewrViewController.swift in Sources */,
 				3CA25ECA24E4A89F00235200 /* ProfileViewController.swift in Sources */,
 				3CA25E8B24E4A41C00235200 /* AppDelegate.swift in Sources */,
