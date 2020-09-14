@@ -117,7 +117,7 @@ extension NewConversationViewController: UISearchBarDelegate {
     }
     
     func searchUsers(query: String) {
-        // chewck if array has firebase result
+        // check if array has firebase result
         if hasFetched {
             filterUsers(with: query)
             
